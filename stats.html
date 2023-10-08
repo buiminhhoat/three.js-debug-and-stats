@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="importmap">
+            {
+              "imports": {
+                "three": "https://unpkg.com/three@0.157.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+              }
+            }
+        </script>
+    </head>
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/stats-js@1.0.1/build/stats.min.js"></script>
+        <script>
+            var stats = Stats();
+            console.log(stats);
+            // console.log(stats);
+            stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+            document.body.appendChild( stats.dom );
+            document.querySelector('[style="width: 80px; height: 48px; display: block;"]')
+                .style = 'width: 120px; height: 72px; display: block;'
+        </script>
+        <script type="module">
+            import GUI from 'https://cdn.jsdelivr.net/npm/lil-gui@0.18/+esm';
+            import * as THREE from 'three';
+            let fps = { fps: 0 };
+            // const gui = new GUI();
+            // gui.add(fps, 'fps');
+
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize( window.innerWidth * 0.8, window.innerHeight * 0.8 );
+            document.body.appendChild( renderer.domElement );
+
+            const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+            const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+            const cube = new THREE.Mesh( geometry, material );
+            scene.add( cube );
+
+            camera.position.z = 5;
+            camera.lookAt(0, 0, 0);
+
+            let count = 0;
+
+            let f = () => {
+                if (count >= 100) return;
+                count++;
+                let frame = 0, last = 0;
+                function animate(timestamp) {
+                    stats.begin();
+
+                    frame++;
+
+                    if (timestamp >= last + 1000) {
+                        fps.fps = Math.floor((frame * 1000) / (timestamp - last) * 1000) / 1000;
+                        frame = 0;
+                        last = timestamp;
+                        // gui.controllers[0].updateDisplay();
+                    }
+                    renderer.render( scene, camera );
+
+
+                    stats.end();
+                    requestAnimationFrame( animate );
+                }
+                animate();
+            }
+
+            f();
+
+
+            document.addEventListener("keydown", (ev) => {
+                let keyCode = ev.which;
+                if (keyCode === 37) {
+                    // left
+                    cube.position.x -= 0.1;
+                    cube.position.x %= 4;
+                    if (cube.position.x < 0) cube.position.x += 4;
+                }
+
+                if (keyCode === 39) {
+                    // left
+                    cube.position.x += 0.1;
+                    cube.position.x %= 4;
+                }
+                f();
+            })
+        </script>
+    </body>
+</html>
