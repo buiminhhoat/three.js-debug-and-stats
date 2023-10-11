@@ -66,16 +66,35 @@
          const cubeFolder = gui.addFolder('Cube')
          // for position
          const posFolder = cubeFolder.addFolder('position')
-         posFolder.add(cube.position, 'x', 0, 5, 0.1)
-         posFolder.add(cube.position, 'y', 0, 5, 0.1)
-         posFolder.add(cube.position, 'z', 0, 5, 0.1)
+         posFolder.add(cube.position, 'x', 0, 5, 0.1).onChange(() => {
+            // callback
+            console.log(cube.position.x)
+         })
+         posFolder.add(cube.position, 'y', 0, 5, 0.1).onChange(() => {
+            // callback
+            console.log(cube.position.y)
+         })
+         posFolder.add(cube.position, 'z', 0, 5, 0.1).onChange(() => {
+            // callback
+            console.log(cube.position.z)
+         })
          posFolder.open()
 
          // for scale
          const scaleFolder = cubeFolder.addFolder('Scale')
-         scaleFolder.add(cube.scale, 'x', 0, 5, 0.1).name('Width')
-         scaleFolder.add(cube.scale, 'y', 0, 5, 0.1).name('Height')
-         scaleFolder.add(cube.scale, 'z', 0, 5, 0.1).name('Depth')
+         scaleFolder.add(cube.scale, 'x', 0, 5, 0.1).name('Width').onChange(() => {
+            // callback
+            console.log(cube.scale.x)
+         })
+         scaleFolder.add(cube.scale, 'y', 0, 5, 0.1).name('Height').onChange(() => {
+            // callback
+            console.log(cube.scale.y)
+         })
+         scaleFolder.add(cube.scale, 'z', 0, 5, 0.1).name('Depth').onChange(() => {
+            // callback
+            console.log(cube.scale.z)
+         })
+
          scaleFolder.open()
          cubeFolder.open()
          // responsiveness

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js Cube Debug & Stat</title>
+    <style>
+        body { margin: 0; }
+        #debug-container { position: absolute; top: 10px; left: 10px; }
+    </style>
+</head>
+<body>
+    <div id="debug-container"></div>
+
+    <script src="https://threejs.org/build/three.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+    <script>
+        var scene, camera, renderer, cube;
+        var xScale = 3.0; // Giá trị mặc định cho xScale
+        var debugGUI;
+
+        init();
+        animate();
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10);
+            renderer = new THREE.WebGLRenderer();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            const geometry = new THREE.BoxGeometry();
+            const material = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                wireframe: true
+             });
+            cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+
+            camera.position.z = 5;
+
+            // Tạo thanh gỡ lỗi (debugging bar) bằng dat.GUI
+            debugGUI = new dat.GUI({ autoPlace: false });
+            document.getElementById('debug-container').appendChild(debugGUI.domElement);
+
+            // Thêm biến xScale vào thanh gỡ lỗi
+            debugGUI.add({ xScale: xScale }, 'xScale', -6, 6).onChange(function (value) {
+                xScale = value;
+                updateCubeScale();
+            });
+
+            // Đầu tiên, cập nhật kích thước ban đầu của cube
+            updateCubeScale();
+
+            scene.background = new THREE.Color(0x111111);
+
+            // Add a light source to see the cube
+            var light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(1, 1, 1);
+            scene.add(light);
+        }
+
+        function updateCubeScale() {
+            // Cập nhật kích thước của cube dựa trên giá trị của xScale
+            cube.scale.set(xScale, xScale, xScale + 0.3);
+
+            // Kiểm tra xem xScale có bằng 0 không và xử lý lỗi nếu cần
+            if (xScale === 0) {
+                console.error("Không thể chia cho 0.");
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate the cube
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
+
+            renderer.render(scene, camera);
+        }
+    </script>
+</body>
+</html>
